@@ -1,32 +1,53 @@
 import React from 'react';
 import './styles.css';
 import whatsappIcon from '../../assets/images/icons/whatsapp.svg';
+import { create } from 'domain';
+import api from '../../services/api';
 
-const TeacherItem: React.FC = () => {
+export interface Teacher {
+  id: number;
+  avatar: string;
+  bio: string;
+  cost: number;
+  name: string;
+  subject: string;
+  whatsapp: string;
+}
+
+export interface TeacherItemProps {
+  teacher: Teacher
+}
+
+const TeacherItem: React.FC<TeacherItemProps> = ({teacher}) => {
+
+  function createNewConnection() {
+    api.post('connections', {
+      user_id: teacher.id
+    })
+  }
+  
   return (
     <article className="teacher-item">
           <header>
-            <img src="https://avatars2.githubusercontent.com/u/2254731?s=460&u=0ba16a79456c2f250e7579cb388fa18c5c2d7d65&v=4" alt="Diego Fernandes"/>
+            <img src={teacher.avatar} alt={teacher.name}/>
             <div>
-              <strong>Diego Fernandes</strong>
-              <span>Quimica</span>
+              <strong>{teacher.name}</strong>
+              <span>{teacher.subject}</span>
             </div>
           </header>
           <p>
-          Enthusiast of the best web & mobile development technologies.
-          <br/> <br/>
-          Passionate about education and changing people's lives through programming. More than 200,000 people have already undergone one of my trainings. "Nothing in this world beats good old persistence. Talent does not surpass. Nothing more common than talented failures. Genius does not overcome. Unrecognized geniuses is practically a cliche. Education does not exceed. The world is full of educated fools. Persistence and determination alone are powerful."
+            {teacher.bio}
           </p>
 
           <footer>
             <p>
               Preço/Hora 
-              <strong>R$ 20,00</strong>
+              <strong>R$ {teacher.cost}</strong>
             </p>
-            <button type="button">
+            <a target="_blank" onClick={createNewConnection} href={`https://wa.me/${teacher.whatsapp}`}>
               <img src={whatsappIcon} alt="Zap Zap"/>
               Entrar em contato
-            </button>
+            </a>
           </footer>
         </article>
   )
